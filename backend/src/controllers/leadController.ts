@@ -1,19 +1,41 @@
 import { Request, Response } from "express";
 import Lead from "../models/Lead";
 
-export const createLead = async (req: Request, res: Response) => {
+export const createLead = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const lead = await Lead.create(req.body);
+    const { name, email, status, source } = req.body;
+
+    if (!name || !email) {
+      return res.status(400).json({
+        message: "Name and Email are required",
+      });
+    }
+
+    const lead = await Lead.create({
+      name,
+      email,
+      status,
+      source,
+    });
 
     res.status(201).json(lead);
+
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
-      message: "Server Error",
+      message: "Failed to create lead",
     });
   }
 };
 
-export const getLeads = async (req: Request, res: Response) => {
+export const getLeads = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const page = Number(req.query.page) || 1;
     const limit = 10;
@@ -65,13 +87,20 @@ export const getLeads = async (req: Request, res: Response) => {
       totalPages: Math.ceil(total / limit),
       leads,
     });
+
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Server Error",
     });
   }
 };
-export const getLeadById = async (req: Request, res: Response) => {
+
+export const getLeadById = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const lead = await Lead.findById(req.params.id);
 
@@ -82,14 +111,20 @@ export const getLeadById = async (req: Request, res: Response) => {
     }
 
     res.status(200).json(lead);
+
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Server Error",
     });
   }
 };
 
-export const updateLead = async (req: Request, res: Response) => {
+export const updateLead = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const lead = await Lead.findByIdAndUpdate(
       req.params.id,
@@ -106,16 +141,24 @@ export const updateLead = async (req: Request, res: Response) => {
     }
 
     res.status(200).json(lead);
+
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Server Error",
     });
   }
 };
 
-export const deleteLead = async (req: Request, res: Response) => {
+export const deleteLead = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const lead = await Lead.findByIdAndDelete(req.params.id);
+    const lead = await Lead.findByIdAndDelete(
+      req.params.id
+    );
 
     if (!lead) {
       return res.status(404).json({
@@ -126,7 +169,10 @@ export const deleteLead = async (req: Request, res: Response) => {
     res.status(200).json({
       message: "Lead deleted successfully",
     });
+
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: "Server Error",
     });
