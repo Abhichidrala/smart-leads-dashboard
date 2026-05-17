@@ -14,6 +14,7 @@ app.use(cors());
 const PORT = process.env.PORT || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
+console.log(process.env.MONGO_URI);
 mongoose
   .connect(process.env.MONGO_URI as string)
   .then(() => {
@@ -24,8 +25,9 @@ mongoose
     });
   })
   .catch((error) => {
-    console.log(error);
-  });
+  console.log("MongoDB Error:");
+  console.log(error);
+});
 
 app.get("/", (req, res) => {
   res.send("API Running");
