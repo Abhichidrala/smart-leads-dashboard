@@ -31,6 +31,7 @@ export default function Home() {
       console.log(data);
 
       alert("Login Successful");
+      window.location.href = "/dashboard";
     } catch (error) {
       console.log(error);
 
