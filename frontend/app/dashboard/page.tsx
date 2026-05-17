@@ -25,13 +25,13 @@ export default function DashboardPage() {
   const [leadStatus, setLeadStatus] = useState("New");
   const [leadSource, setLeadSource] = useState("Website");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+ // useEffect(() => {
+   // const token = localStorage.getItem("token");
 
-    if (!token) {
-      window.location.href = "/";
-    }
-  }, []);
+    //if (!token) {
+      //window.location.href = "/";
+    //}
+  //}, []);
 
   useEffect(() => {
     fetchLeads();
