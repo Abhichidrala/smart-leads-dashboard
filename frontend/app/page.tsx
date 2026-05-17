@@ -11,7 +11,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/auth/login",
+        "https://smart-leads-dashboard-lb0c.onrender.com/api/auth/login",
         {
           method: "POST",
 
