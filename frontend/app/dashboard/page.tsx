@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useDebounce } from "use-debounce";
+import { CSVLink } from "react-csv";
 
 interface Lead {
   _id: string;
@@ -12,8 +14,11 @@ interface Lead {
 
 export default function DashboardPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 500);
+
   const [status, setStatus] = useState("");
   const [source, setSource] = useState("");
 
@@ -25,67 +30,78 @@ export default function DashboardPage() {
   const [leadStatus, setLeadStatus] = useState("New");
   const [leadSource, setLeadSource] = useState("Website");
 
- // useEffect(() => {
-   // const token = localStorage.getItem("token");
-
-    //if (!token) {
-      //window.location.href = "/";
-    //}
-  //}, []);
-
   useEffect(() => {
     fetchLeads();
-  }, [search, status, source, page]);
+  }, [debouncedSearch, status, source, page]);
 
   const fetchLeads = async () => {
     try {
+
+      setLoading(true);
+
       const response = await fetch(
-        `http://localhost:5000/api/leads?search=${search}&status=${status}&source=${source}&page=${page}`
+        `https://smart-leads-dashboard-lb0c.onrender.com/api/leads?search=${debouncedSearch}&status=${status}&source=${source}&page=${page}`
       );
 
       const data = await response.json();
 
       setLeads(data.leads);
       setTotalPages(data.totalPages);
+
     } catch (error) {
+
       console.log(error);
+
+    } finally {
+
+      setLoading(false);
     }
   };
 
   const createLead = async () => {
     try {
-      await fetch("http://localhost:5000/api/leads", {
-        method: "POST",
+      await fetch(
+        "https://smart-leads-dashboard-lb0c.onrender.com/api/leads",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        body: JSON.stringify({
-          name,
-          email,
-          status: leadStatus,
-          source: leadSource,
-        }),
-      });
+          body: JSON.stringify({
+            name,
+            email,
+            status: leadStatus,
+            source: leadSource,
+          }),
+        }
+      );
 
       fetchLeads();
 
       setName("");
       setEmail("");
+
     } catch (error) {
+
       console.log(error);
     }
   };
 
   const deleteLead = async (id: string) => {
     try {
-      await fetch(`http://localhost:5000/api/leads/${id}`, {
-        method: "DELETE",
-      });
+      await fetch(
+        `https://smart-leads-dashboard-lb0c.onrender.com/api/leads/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       fetchLeads();
+
     } catch (error) {
+
       console.log(error);
     }
   };
@@ -94,13 +110,15 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-100 p-8">
 
       <div className="flex justify-between items-center mb-6">
+
         <CSVLink
-  data={leads}
-  filename="leads.csv"
-  className="bg-green-500 text-white px-4 py-2 rounded-lg"
->
-  Export CSV
-</CSVLink>
+          data={leads}
+          filename="leads.csv"
+          className="bg-green-500 text-white px-4 py-2 rounded-lg"
+        >
+          Export CSV
+        </CSVLink>
+
         <h1 className="text-3xl font-bold">
           Smart Leads Dashboard
         </h1>
@@ -117,6 +135,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="bg-white p-6 rounded-xl shadow-md mb-6 flex gap-4 flex-wrap">
+
         <input
           type="text"
           placeholder="Name"
@@ -163,6 +182,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="flex gap-4 mb-6 flex-wrap">
+
         <input
           type="text"
           placeholder="Search"
@@ -196,7 +216,15 @@ export default function DashboardPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
+
+        {loading && (
+          <div className="p-4 text-center font-semibold">
+            Loading Leads...
+          </div>
+        )}
+
         <table className="w-full">
+
           <thead className="bg-black text-white">
             <tr>
               <th className="p-4 text-left">Name</th>
@@ -243,10 +271,12 @@ export default function DashboardPage() {
               </tr>
             )}
           </tbody>
+
         </table>
       </div>
 
       <div className="flex justify-center gap-4 mt-6">
+
         <button
           onClick={() => setPage(page - 1)}
           disabled={page === 1}
@@ -266,6 +296,7 @@ export default function DashboardPage() {
         >
           Next
         </button>
+
       </div>
     </div>
   );
