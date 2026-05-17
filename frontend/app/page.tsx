@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -30,9 +34,21 @@ export default function Home() {
 
       console.log(data);
 
-      alert("Login Successful");
-      window.location.href = "/dashboard";
+      if (data.token) {
+
+        localStorage.setItem("token", data.token);
+
+        alert("Login Successful");
+
+        router.push("/dashboard");
+
+      } else {
+
+        alert("Invalid Credentials");
+      }
+
     } catch (error) {
+
       console.log(error);
 
       alert("Login Failed");
