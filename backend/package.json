@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "start": "ts-node src/server.ts"
-  },
+  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "start": "node --loader ts-node/esm src/server.ts"
+},
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
