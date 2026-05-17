@@ -2,10 +2,10 @@ import express from "express";
 
 import {
   createLead,
-  deleteLead,
-  getLeadById,
   getLeads,
+  getLeadById,
   updateLead,
+  deleteLead,
 } from "../controllers/leadController";
 
 const router = express.Router();

@@ -1,13 +1,16 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, {
+  Schema,
+  Document,
+} from "mongoose";
 
 export interface ILead extends Document {
   name: string;
   email: string;
-  status: "New" | "Contacted" | "Qualified" | "Lost";
-  source: "Website" | "Instagram" | "Referral";
+  status: string;
+  source: string;
 }
 
-const leadSchema = new Schema<ILead>(
+const leadSchema = new Schema(
   {
     name: {
       type: String,
@@ -21,14 +24,12 @@ const leadSchema = new Schema<ILead>(
 
     status: {
       type: String,
-      enum: ["New", "Contacted", "Qualified", "Lost"],
       default: "New",
     },
 
     source: {
       type: String,
-      enum: ["Website", "Instagram", "Referral"],
-      required: true,
+      default: "Website",
     },
   },
   {
@@ -36,4 +37,7 @@ const leadSchema = new Schema<ILead>(
   }
 );
 
-export default mongoose.model<ILead>("Lead", leadSchema);
+export default mongoose.model(
+  "Lead",
+  leadSchema
+);
