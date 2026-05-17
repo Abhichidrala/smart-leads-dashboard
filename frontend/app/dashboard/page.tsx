@@ -60,7 +60,8 @@ export default function DashboardPage() {
 
   const createLead = async () => {
     try {
-      await fetch(
+
+      const response = await fetch(
         "https://smart-leads-dashboard-lb0c.onrender.com/api/leads",
         {
           method: "POST",
@@ -78,19 +79,35 @@ export default function DashboardPage() {
         }
       );
 
-      fetchLeads();
+      const data = await response.json();
 
-      setName("");
-      setEmail("");
+      console.log(data);
+
+      if (response.ok) {
+
+        alert("Lead Added Successfully");
+
+        fetchLeads();
+
+        setName("");
+        setEmail("");
+
+      } else {
+
+        alert(data.message || "Failed To Add Lead");
+      }
 
     } catch (error) {
 
       console.log(error);
+
+      alert("Server Error");
     }
   };
 
   const deleteLead = async (id: string) => {
     try {
+
       await fetch(
         `https://smart-leads-dashboard-lb0c.onrender.com/api/leads/${id}`,
         {
